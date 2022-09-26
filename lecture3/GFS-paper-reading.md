@@ -21,5 +21,41 @@ data-intensive applications.
 - Reexamination
     - First, component failures are the norm(标准) rather than the
     exception.
-    - Second, files are huge by traditional standards. Multi-GB
-    files are common.
+    - Second, files are huge by traditional standards. 
+    - Third, most files are mutated by appending new data
+    rather than overwriting existing data.
+    - Fourth, co-designing the applications and the file system API benefits the overall system by increasing our flexibility.
+
+## Design Overview
+
+### Assuptions
+
+- built on commodity components that may fail
+- The system stores a modest number of large files
+- Reads:
+    1. large streaming read
+    2. small random read
+- Writes:
+    - large append
+    - random and small write 
+- The system must efficiently implement well-defined semantics
+for multiple clients that concurrently append
+to the same file.
+    - Our files are often used as producerconsumer
+queues or for many-way merging
+- High sustained bandwidth is more important than low
+latency.
+
+### Interface
+- does not implement a standard API like POSIX
+- but support usual operations like create, delete, open...
+- Moreover, GFS support *snapshot*, **record append** which is useful for multi-way merge and producer-consumer queues that many clients can simultaneously append
+to without additional locking.
+
+### Architecture
+
+![GFS](GFS.png)
+
+- GFS consists of a single master and multiple *chunkservers* and is accessed by multiple *clients* 
+- Files are divided into fixed-size chunks.
+    - Each chunk is identified by an immutable and globally unique 64 bit chunk handle assigned by the master at the time of chunk creation.
