@@ -3,8 +3,7 @@
 ## Outline
 - reexamining traditional file system assumptions in light of our current and anticipated application
 workloads and technological environment.
-- We treat component failures as the norm rather than the
-exception
+- We treat component failures as the norm rather than the exception
 - Our system provides fault tolerance by constant monitoring, replicating crucial data, and fast and automatic recovery
 - Our design delivers high aggregate throughput to many
 concurrent readers and writers performing a variety of tasks.
@@ -144,3 +143,18 @@ ___
 - Data Flow
 
     To fully utilize each machine’s network bandwidth, the data is pushed linearly along a chain of chunkservers rather than distributed in some other topology (e.g., tree). Thus, each machine’s full outbound bandwidth is used to transfer the data as fast as possible rather than divided among multiple recipients.
+- Atomic Record Append
+    - Atomic Record Append promise the concurrency
+
+    - If a record append fails at any replica, the client retries the operation. As a result, replicas of the same chunk may contain different data possibly including duplicates of the same record in whole or in part. 
+
+- Snapshot
+
+    - The snapshot operation makes a copy of a file or a directory tree (the “source”) almost instantaneously, while minimizing any interruptions of ongoing mutations.
+
+    - When the master receives a snapshot request, it first revokes any outstanding leases on the chunks in the files it is about to snapshot. This ensures that any subsequent writes to these chunks will require an interaction with the master to find the lease holder. This will give the master an opportunity to create a new copy of the chunk first.
+    - copy on write 
+
+## Master operation
+- Namespace Management and Locking
+    - GFS logically represents its namespace as a lookup table mapping full pathnames to metadata. 
