@@ -45,7 +45,6 @@ func ihash(key string) int {
 //
 func Worker(mapf func(string, string) []KeyValue,
 	reducef func(string, []string) string) {
-
 	// Your worker implementation here.
 
 	// uncomment to send the Example RPC to the master.
@@ -61,7 +60,7 @@ func Worker(mapf func(string, string) []KeyValue,
 		for {
 			select {
 			case state := <-change:
-				fmt.Printf("%d set to %s\n", args.Pid, state)
+				//fmt.Printf("%d set to %s\n", args.Pid, state)
 				args.State = state
 			case <-tick.C:
 				err := call("Master.Assign", &args, &reply)
@@ -98,7 +97,7 @@ func Worker(mapf func(string, string) []KeyValue,
 			}()
 			select {
 			case <-mapch:
-			case <-time.After(9 * time.Second):
+			case <-time.After(5 * time.Second):
 				change <- "fail"
 				continue
 			}
@@ -179,7 +178,7 @@ func Worker(mapf func(string, string) []KeyValue,
 				var output string
 				select {
 				case output = <-choutput:
-				case <-time.After(9 * time.Second):
+				case <-time.After(5 * time.Second):
 					change <- "fail"
 					continue
 				}

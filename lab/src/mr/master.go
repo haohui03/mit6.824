@@ -1,6 +1,7 @@
 package mr
 
 import (
+	"fmt"
 	"log"
 	"net"
 	"net/http"
@@ -39,14 +40,12 @@ func (m *Master) Example(args *ExampleArgs, reply *ExampleReply) error {
 	return nil
 }
 
-func (m *Master) assignMap(args *AssignTaskArgs, reply *AssignTaskReply) {
-	m.Wgm.Add(1)
+func (m *Master) assignMap(args *AssignTaskArgs, reply *AssignTaskReply, filename string) {
 	reply.Task = "map"
 	m.Mu.Lock()
-	filename := m.Filelist[len(m.Filelist)-1]
 	reply.Filename = filename
 	reply.Tasknumber = m.Filemap[filename]
-	m.Filelist = m.Filelist[:len(m.Filelist)-1]
+
 	//fmt.Printf("id :%d, tasknumber:%d\n", args.Pid, reply.Tasknumber)
 	reply.Nreduce = m.Nreduce
 	m.Mu.Unlock()
@@ -56,6 +55,9 @@ func (m *Master) assignMap(args *AssignTaskArgs, reply *AssignTaskReply) {
 		case <-time.After(10 * time.Second):
 			m.Mu.Lock()
 			m.Filelist = append(m.Filelist, filename)
+			delete(m.WorkerMap, args.Pid)
+			fmt.Println("===============")
+			fmt.Println("delete by map 超时 %d", args.Pid)
 			m.Mu.Unlock()
 		case state := <-m.WorkerMap[args.Pid].Tracker:
 			if state == "done" {
@@ -70,12 +72,12 @@ func (m *Master) assignMap(args *AssignTaskArgs, reply *AssignTaskReply) {
 	}()
 }
 
-func (m *Master) assignReduce(args *AssignTaskArgs, reply *AssignTaskReply) {
+func (m *Master) assignReduce(args *AssignTaskArgs, reply *AssignTaskReply, reduceNumber int) {
 	reply.Task = "reduce"
-	reduceNumber := m.reduce[len(m.reduce)-1]
-	m.reduce = m.reduce[:len(m.reduce)-1]
+	m.Mu.Lock()
+
+	m.Mu.Unlock()
 	reply.Tasknumber = reduceNumber
-	m.Wgr.Add(1)
 	go func() {
 		defer m.Wgr.Done()
 		select {
@@ -83,6 +85,9 @@ func (m *Master) assignReduce(args *AssignTaskArgs, reply *AssignTaskReply) {
 			//fmt.Printf("timeout: %d", reduceNumber)
 			m.Mu.Lock()
 			m.reduce = append(m.reduce, reduceNumber)
+			fmt.Println("===============")
+			fmt.Println("delete by reduce 超时 %d", args.Pid)
+			delete(m.WorkerMap, args.Pid)
 			m.Mu.Unlock()
 		case state := <-m.WorkerMap[args.Pid].Tracker:
 			if state == "done" {
@@ -102,47 +107,86 @@ func (m *Master) Assign(args *AssignTaskArgs, reply *AssignTaskReply) error {
 	//fmt.Printf("filelist: %v\n", m.Filelist)
 	//fmt.Printf("reduce list: %v\n", m.reduce)
 	if _, ok := m.WorkerMap[args.Pid]; !ok {
+		m.Mu.Lock()
 		m.WorkerMap[args.Pid] = &WorkerTracker{State: args.State, Tracker: make(chan string)}
+		m.Mu.Unlock()
 	} else {
 		m.WorkerMap[args.Pid].State = args.State
 	}
 	switch args.State {
 	case "free":
-		if len(m.Filelist) != 0 { //map
-			m.assignMap(args, reply)
+		m.Mu.Lock()
+		fileLengh := len(m.Filelist)
+		var filename string
+		if fileLengh != 0 {
+			filename = m.Filelist[len(m.Filelist)-1]
+			m.Filelist = m.Filelist[:len(m.Filelist)-1]
+			m.Wgm.Add(1)
+		}
+		m.Mu.Unlock()
+		if filename != "" { //map
+			m.assignMap(args, reply, filename)
+			m.WorkerMap[args.Pid].State = "working map"
 		} else {
-			if len(m.reduce) != 0 { //reduce
-				m.Wgm.Wait() //wait map
-				if len(m.Filelist) == 0 {
-					m.assignReduce(args, reply)
-				} else {
-					reply.Task = "waiting"
+			m.Wgm.Wait() //wait map
+			m.Mu.Lock()
+			if len(m.Filelist) == 0 {
+				reduceLengh := len(m.reduce)
+				reduceNumber := -1
+				if reduceLengh != 0 { //reduce
+					reduceNumber = m.reduce[len(m.reduce)-1]
+					m.reduce = m.reduce[:len(m.reduce)-1]
+					m.Wgr.Add(1)
 				}
+				m.Mu.Unlock()
+				if reduceNumber >= 0 {
+					m.assignReduce(args, reply, reduceNumber)
+					m.WorkerMap[args.Pid].State = "working reduce"
+				} else {
+					m.Wgr.Wait()
+					m.Mu.Lock()
+					if len(m.reduce) == 0 {
+						reply.Task = "exit"
+						delete(m.WorkerMap, args.Pid)
+						fmt.Println("===============")
+						fmt.Println("delete by exit %d", args.Pid)
+						m.Mu.Unlock()
+					} else {
+						reply.Task = "waiting"
+						m.WorkerMap[args.Pid].State = "waiting"
+						m.Mu.Unlock()
+					}
+				}
+
 			} else {
-				m.Wgr.Wait()
-				if len(m.reduce) == 0 {
-					reply.Task = "exit"
-				} else {
-					reply.Task = "waiting"
-				}
+				reply.Task = "waiting"
+				m.WorkerMap[args.Pid].State = "waiting"
+				m.Mu.Unlock()
 			}
 		}
 	case "done":
 		m.Mu.Lock()
-
 		m.WorkerMap[args.Pid].Tracker <- "done"
-		//fmt.Println("done")
-		//fmt.Printf("filelist: %v\n", m.Filelist)
-		//fmt.Printf("reduce list: %v\n", m.reduce)
+		// fmt.Println("done")
+		// fmt.Printf("filelist: %v\n", m.Filelist)
+		// fmt.Printf("reduce list: %v\n", m.reduce)
+		// for i, worker := range m.WorkerMap {
+		// 	fmt.Printf("pid:%d state:%s\t", i, worker.State)
+		// }
+		// fmt.Println()
+		m.WorkerMap[args.Pid].State = "free"
 		m.Mu.Unlock()
 		reply.Task = "setfree"
 	case "working":
 		reply.Task = "waiting"
+		m.Mu.Lock()
+		m.Mu.Unlock()
 	case "fail":
 		m.Mu.Lock()
 		m.WorkerMap[args.Pid].Tracker <- "fail"
 		m.Mu.Unlock()
 		reply.Task = "setfree"
+		m.WorkerMap[args.Pid].State = "failed"
 	}
 	return nil
 }
@@ -169,17 +213,24 @@ func (m *Master) server() {
 //
 func (m *Master) Done() bool {
 	ret := false
-	if len(m.reduce) == 0 {
-		m.Wgr.Wait()
-		if len(m.reduce) == 0 {
-			time.Sleep(3 * time.Second)
-			ret = true
-		} else {
-			ret = false
-		}
+	m.Mu.Lock()
+	reduceLength := len(m.reduce)
+	workerLength := len(m.WorkerMap)
+	if reduceLength == 0 && workerLength == 0 {
+		ret = true
+		time.Sleep(3 * time.Second)
 	}
+	m.Mu.Unlock()
+	fmt.Println("******************")
+	fmt.Println("call done()")
 	// Your code here.
-
+	for i, worker := range m.WorkerMap {
+		fmt.Printf("pid:%d state:%s\t", i, worker.State)
+	}
+	fmt.Println()
+	fmt.Printf("filelist: %v\n", m.Filelist)
+	fmt.Printf("reduce list: %v\n", m.reduce)
+	fmt.Println("******************")
 	return ret
 }
 
