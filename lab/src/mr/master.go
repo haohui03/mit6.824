@@ -57,7 +57,7 @@ func (m *Master) assignMap(args *AssignTaskArgs, reply *AssignTaskReply, filenam
 			m.Filelist = append(m.Filelist, filename)
 			delete(m.WorkerMap, args.Pid)
 			fmt.Println("===============")
-			fmt.Println("delete by map 超时 %d", args.Pid)
+			fmt.Printf("delete by map 超时 %d\n", args.Pid)
 			m.Mu.Unlock()
 		case state := <-m.WorkerMap[args.Pid].Tracker:
 			if state == "done" {
@@ -66,6 +66,7 @@ func (m *Master) assignMap(args *AssignTaskArgs, reply *AssignTaskReply, filenam
 				//failed
 				m.Mu.Lock()
 				m.Filelist = append(m.Filelist, filename)
+				delete(m.WorkerMap, args.Pid)
 				m.Mu.Unlock()
 			}
 		}
@@ -74,9 +75,6 @@ func (m *Master) assignMap(args *AssignTaskArgs, reply *AssignTaskReply, filenam
 
 func (m *Master) assignReduce(args *AssignTaskArgs, reply *AssignTaskReply, reduceNumber int) {
 	reply.Task = "reduce"
-	m.Mu.Lock()
-
-	m.Mu.Unlock()
 	reply.Tasknumber = reduceNumber
 	go func() {
 		defer m.Wgr.Done()
@@ -86,7 +84,7 @@ func (m *Master) assignReduce(args *AssignTaskArgs, reply *AssignTaskReply, redu
 			m.Mu.Lock()
 			m.reduce = append(m.reduce, reduceNumber)
 			fmt.Println("===============")
-			fmt.Println("delete by reduce 超时 %d", args.Pid)
+			fmt.Printf("delete by reduce 超时 %d\n", args.Pid)
 			delete(m.WorkerMap, args.Pid)
 			m.Mu.Unlock()
 		case state := <-m.WorkerMap[args.Pid].Tracker:
@@ -95,6 +93,7 @@ func (m *Master) assignReduce(args *AssignTaskArgs, reply *AssignTaskReply, redu
 			} else {
 				m.Mu.Lock()
 				m.reduce = append(m.reduce, reduceNumber)
+				delete(m.WorkerMap, args.Pid)
 				m.Mu.Unlock()
 			}
 		}
@@ -149,7 +148,7 @@ func (m *Master) Assign(args *AssignTaskArgs, reply *AssignTaskReply) error {
 						reply.Task = "exit"
 						delete(m.WorkerMap, args.Pid)
 						fmt.Println("===============")
-						fmt.Println("delete by exit %d", args.Pid)
+						fmt.Printf("delete by exit %d\n", args.Pid)
 						m.Mu.Unlock()
 					} else {
 						reply.Task = "waiting"
@@ -179,8 +178,6 @@ func (m *Master) Assign(args *AssignTaskArgs, reply *AssignTaskReply) error {
 		reply.Task = "setfree"
 	case "working":
 		reply.Task = "waiting"
-		m.Mu.Lock()
-		m.Mu.Unlock()
 	case "fail":
 		m.Mu.Lock()
 		m.WorkerMap[args.Pid].Tracker <- "fail"
@@ -216,6 +213,7 @@ func (m *Master) Done() bool {
 	m.Mu.Lock()
 	reduceLength := len(m.reduce)
 	workerLength := len(m.WorkerMap)
+	fmt.Println(reduceLength, workerLength)
 	if reduceLength == 0 && workerLength == 0 {
 		ret = true
 		time.Sleep(3 * time.Second)
@@ -225,7 +223,7 @@ func (m *Master) Done() bool {
 	fmt.Println("call done()")
 	// Your code here.
 	for i, worker := range m.WorkerMap {
-		fmt.Printf("pid:%d state:%s\t", i, worker.State)
+		fmt.Printf("pid:%d state:%s\t\n", i, worker.State)
 	}
 	fmt.Println()
 	fmt.Printf("filelist: %v\n", m.Filelist)
