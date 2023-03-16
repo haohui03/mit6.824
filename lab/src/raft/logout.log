@@ -1,0 +1,893 @@
+S0 readPersister fail with                                                                                                                              
+len(data) 0                                                                                                                                             
+S0 is made with lastapplied -1                                                                                                                          
+                                S1 readPersister fail with                                                                                              
+                                len(data) 0                                                                                                             
+                                S1 is made with lastapplied                                                                                             
+                                -1                                                                                                                      
+S0 set election timeout 1052                                                                                                                            
+and current term: 0, state:1,                                                                                                                           
+logLength: 0                                                                                                                                            
+S0 persist                                                                                                                                              
+S0 receive to S 1 false  with                                                                                                                           
+vote false with args:{1 0 -1 0}                                                                                                                         
+                                                              S2 readPersister fail with                                                                
+                                                              len(data) 0                                                                               
+                                                              S2 is made with lastapplied                                                               
+                                                              -1                                                                                        
+                                S1 set election timeout 951                                                                                             
+                                and current term: 0, state:1,                                                                                           
+                                logLength: 0                                                                                                            
+                                S1 persist                                                                                                              
+                                                              S2 set election timeout 1031                                                              
+                                                              and current term: 0, state:1,                                                             
+                                                              logLength: 0                                                                              
+                                                              S2 persist                                                                                
+                                S1 refuse vote to 2                                                                                                     
+S0 refuse vote to 2                                                                                                                                     
+                                                              S2 receive to S 1 true  with                                                              
+                                                              vote false with args:{1 2 -1                                                              
+                                                              0}                                                                                        
+                                                              S2 receive to S 0 true  with                                                              
+                                                              vote false with args:{1 2 -1                                                              
+                                                              0}                                                                                        
+S0 refresh timer                                                                                                                                        
+S0 set election timeout 927 and                                                                                                                         
+current term: 1, state:2,                                                                                                                               
+logLength: 0                                                                                                                                            
+S0 persist                                                                                                                                              
+                                                              S2 vote 0                                                                                 
+                                                              S2 set election timeout 942                                                               
+                                                              and current term: 1, state:1,                                                             
+                                                              logLength: 0                                                                              
+                                                              S2 persist                                                                                
+                                                              S2 set term to 2                                                                          
+S0 receive to S 2 true  with                                                                                                                            
+vote true with args:{2 0 -1 0}                                                                                                                          
+S0 receive vote current vote :2                                                                                                                         
+s0 become leader                                                                                                                                        
+012192 S0 leader initaliaze
+S0 set election timeout 994 and                                                                                                                         
+current term: 2, state:0,                                                                                                                               
+logLength: 0                                                                                                                                            
+                                S1 vote 0                                                                                                               
+                                S1 set election timeout 821                                                                                             
+                                and current term: 1, state:1,                                                                                           
+                                logLength: 0                                                                                                            
+                                S1 persist                                                                                                              
+                                S1 set term to 2                                                                                                        
+S0 receive to S 1 true  with                                                                                                                            
+vote true with args:{2 0 -1 0}                                                                                                                          
+S0 is state: 0                                                                                                                                          
+S0 send heartbeat to 1                                                                                                                                  
+S0 send heartbeat to 2                                                                                                                                  
+                                                              S2 set election timeout 992                                                               
+                                                              and current term: 2, state:1,                                                             
+                                                              logLength: 0                                                                              
+                                                              S2 receive heartBeat from 0                                                               
+                                S1 set election timeout 1051                                                                                            
+                                and current term: 2, state:1,                                                                                           
+                                logLength: 0                                                                                                            
+                                S1 receive heartBeat from 0                                                                                             
+S0 leader add log [&{2 11}]                                                                                                                             
+S0 persist                                                                                                                                              
+S0 send append {2 0 -1 0                                                                                                                                
+[0xc0002289c0] -1} to 2 command                                                                                                                         
+[&{2 11}] first time                                                                                                                                    
+S0 send append {2 0 -1 0                                                                                                                                
+[0xc0002289c0] -1} to 1 command                                                                                                                         
+[&{2 11}] first time                                                                                                                                    
+                                                              S2 set election timeout 1042                                                              
+                                                              and current term: 2, state:1,                                                             
+                                                              logLength: 0                                                                              
+                                S1 set election timeout 937                                                                                             
+                                and current term: 2, state:1,                                                                                           
+                                logLength: 0                                                                                                            
+S0 receive from 2reply {0 true                                                                                                                          
+0} first time                                                                                                                                           
+S0 append [&{2 11}] to 2                                                                                                                                
+success first time                                                                                                                                      
+S0 receive from 1reply {0 true                                                                                                                          
+0} first time                                                                                                                                           
+S0 append [&{2 11}] to 1                                                                                                                                
+success first time                                                                                                                                      
+S0 commit 0 command 11                                                                                                                                  
+S0 persist                                                                                                                                              
+S0 is state: 0                                                                                                                                          
+S0 send heartbeat to 1                                                                                                                                  
+S0 send heartbeat to 2                                                                                                                                  
+                                                              S2 set election timeout 800                                                               
+                                                              and current term: 2, state:1,                                                             
+                                                              logLength: 1                                                                              
+                                                              S2 receive heartBeat from 0                                                               
+                                                              S2 commit 0 command 11                                                                    
+                                                              S2 persist                                                                                
+                                S1 set election timeout 820                                                                                             
+                                and current term: 2, state:1,                                                                                           
+                                logLength: 1                                                                                                            
+                                S1 receive heartBeat from 0                                                                                             
+                                S1 commit 0 command 11                                                                                                  
+                                S1 persist                                                                                                              
+S0 is killed                                                                                                                                            
+S0 readPersist                                                                                                                                          
+S0 is made with lastapplied 0                                                                                                                           
+S0 is state: 0                                                                                                                                          
+                                S1 is killed                                                                                                            
+                                S1 readPersist                                                                                                          
+                                S1 is made with lastapplied 0                                                                                           
+S0 set election timeout 1052                                                                                                                            
+and current term: 2, state:1,                                                                                                                           
+logLength: 1                                                                                                                                            
+S0 persist                                                                                                                                              
+                                                              S2 is killed                                                                              
+                                                              S2 readPersist                                                                            
+                                S1 set election timeout 951                                                                                             
+                                and current term: 2, state:1,                                                                                           
+                                logLength: 1                                                                                                            
+                                S1 persist                                                                                                              
+                                                              S2 is made with lastapplied 0                                                             
+                                                              S2 set election timeout 1031                                                              
+                                                              and current term: 2, state:1,                                                             
+                                                              logLength: 1                                                                              
+                                                              S2 persist                                                                                
+                                S1 refuse vote to 2                                                                                                     
+                                                              S2 receive to S 1 true  with                                                              
+                                                              vote false with args:{3 2 0                                                               
+                                                              2}                                                                                        
+S0 refuse vote to 2                                                                                                                                     
+                                                              S2 receive to S 0 true  with                                                              
+                                                              vote false with args:{3 2 0                                                               
+                                                              2}                                                                                        
+                                                              S2 refresh timer                                                                          
+                                S1 refresh timer                                                                                                        
+S0 refresh timer                                                                                                                                        
+S0 set election timeout 927 and                                                                                                                         
+current term: 3, state:2,                                                                                                                               
+logLength: 1                                                                                                                                            
+S0 persist                                                                                                                                              
+                                                              S2 vote 0                                                                                 
+                                                              S2 set election timeout 942                                                               
+                                                              and current term: 3, state:1,                                                             
+                                                              logLength: 1                                                                              
+                                                              S2 persist                                                                                
+                                                              S2 set term to 4                                                                          
+S0 receive to S 2 true  with                                                                                                                            
+vote true with args:{4 0 0 2}                                                                                                                           
+S0 receive vote current vote :2                                                                                                                         
+s0 become leader                                                                                                                                        
+026011 S0 leader initaliaze
+S0 set election timeout 994 and                                                                                                                         
+current term: 4, state:0,                                                                                                                               
+logLength: 1                                                                                                                                            
+                                S1 vote 0                                                                                                               
+                                S1 set election timeout 821                                                                                             
+                                and current term: 3, state:1,                                                                                           
+                                logLength: 1                                                                                                            
+                                S1 persist                                                                                                              
+                                S1 set term to 4                                                                                                        
+S0 receive to S 1 true  with                                                                                                                            
+vote true with args:{4 0 0 2}                                                                                                                           
+S0 is state: 0                                                                                                                                          
+S0 send heartbeat to 1                                                                                                                                  
+S0 send heartbeat to 2                                                                                                                                  
+                                                              S2 set election timeout 992                                                               
+                                                              and current term: 4, state:1,                                                             
+                                                              logLength: 1                                                                              
+                                                              S2 receive heartBeat from 0                                                               
+                                S1 set election timeout 1051                                                                                            
+                                and current term: 4, state:1,                                                                                           
+                                logLength: 1                                                                                                            
+                                S1 receive heartBeat from 0                                                                                             
+S0 leader add log [&{4 12}]                                                                                                                             
+S0 persist                                                                                                                                              
+S0 send append {4 0 0 2                                                                                                                                 
+[0xc000229c80] -1} to 2 command                                                                                                                         
+[&{4 12}] first time                                                                                                                                    
+                                                              S2 set election timeout 1042                                                              
+                                                              and current term: 4, state:1,                                                             
+                                                              logLength: 1                                                                              
+                                                              S2 append log from 1 length 1                                                             
+                                                              from leader 0 entris [&{4                                                                 
+                                                              12}]                                                                                      
+S0 receive from 2reply {0 true                                                                                                                          
+0} first time                                                                                                                                           
+S0 append [&{4 12}] to 2                                                                                                                                
+success first time                                                                                                                                      
+S0 commit 1 command 12                                                                                                                                  
+S0 persist                                                                                                                                              
+S0 send append {4 0 0 2                                                                                                                                 
+[0xc000229c80] 1} to 1 command                                                                                                                          
+[&{4 12}] first time                                                                                                                                    
+                                S1 set election timeout 937                                                                                             
+                                and current term: 4, state:1,                                                                                           
+                                logLength: 1                                                                                                            
+                                S1 append log from 1 length 1                                                                                           
+                                from leader 0 entris [&{4                                                                                               
+                                12}]                                                                                                                    
+S0 receive from 1reply {0 true                                                                                                                          
+0} first time                                                                                                                                           
+S0 append [&{4 12}] to 1                                                                                                                                
+success first time                                                                                                                                      
+S0 is state: 0                                                                                                                                          
+S0 send heartbeat to 1                                                                                                                                  
+S0 send heartbeat to 2                                                                                                                                  
+                                                              S2 set election timeout 800                                                               
+                                                              and current term: 4, state:1,                                                             
+                                                              logLength: 2                                                                              
+                                                              S2 receive heartBeat from 0                                                               
+                                                              S2 commit 1 command 12                                                                    
+                                                              S2 persist                                                                                
+                                S1 set election timeout 820                                                                                             
+                                and current term: 4, state:1,                                                                                           
+                                logLength: 2                                                                                                            
+                                S1 receive heartBeat from 0                                                                                             
+                                S1 commit 1 command 12                                                                                                  
+                                S1 persist                                                                                                              
+S0 is state: 0                                                                                                                                          
+S0 send heartbeat to 1                                                                                                                                  
+S0 send heartbeat to 2                                                                                                                                  
+                                S1 set election timeout 1058                                                                                            
+                                and current term: 4, state:1,                                                                                           
+                                logLength: 2                                                                                                            
+                                S1 receive heartBeat from 0                                                                                             
+                                                              S2 set election timeout 1020                                                              
+                                                              and current term: 4, state:1,                                                             
+                                                              logLength: 2                                                                              
+                                                              S2 receive heartBeat from 0                                                               
+S0 is state: 0                                                                                                                                          
+S0 send heartbeat to 1                                                                                                                                  
+S0 send heartbeat to 2                                                                                                                                  
+                                                              S2 set election timeout 1092                                                              
+                                                              and current term: 4, state:1,                                                             
+                                                              logLength: 2                                                                              
+                                                              S2 receive heartBeat from 0                                                               
+                                S1 set election timeout 1048                                                                                            
+                                and current term: 4, state:1,                                                                                           
+                                logLength: 2                                                                                                            
+                                S1 receive heartBeat from 0                                                                                             
+S0 is state: 0                                                                                                                                          
+S0 send heartbeat to 1                                                                                                                                  
+S0 send heartbeat to 2                                                                                                                                  
+                                                              S2 set election timeout 866                                                               
+                                                              and current term: 4, state:1,                                                             
+                                                              logLength: 2                                                                              
+                                                              S2 receive heartBeat from 0                                                               
+                                S1 set election timeout 916                                                                                             
+                                and current term: 4, state:1,                                                                                           
+                                logLength: 2                                                                                                            
+                                S1 receive heartBeat from 0                                                                                             
+S0 set election timeout 902 and                                                                                                                         
+current term: 4, state:0,                                                                                                                               
+logLength: 2                                                                                                                                            
+S0 is killed                                                                                                                                            
+S0 readPersist                                                                                                                                          
+S0 is made with lastapplied 1                                                                                                                           
+S0 is state: 0                                                                                                                                          
+S0 set election timeout 1052                                                                                                                            
+and current term: 4, state:1,                                                                                                                           
+logLength: 2                                                                                                                                            
+S0 persist                                                                                                                                              
+                                                              S2 vote 0                                                                                 
+                                                              S2 set election timeout 1036                                                              
+                                                              and current term: 4, state:1,                                                             
+                                                              logLength: 2                                                                              
+                                                              S2 persist                                                                                
+                                                              S2 set term to 5                                                                          
+S0 receive to S 2 true  with                                                                                                                            
+vote true with args:{5 0 1 4}                                                                                                                           
+S0 receive vote current vote :2                                                                                                                         
+s0 become leader                                                                                                                                        
+034777 S0 leader initaliaze
+S0 set election timeout 927 and                                                                                                                         
+current term: 5, state:0,                                                                                                                               
+logLength: 2                                                                                                                                            
+                                S1 vote 0                                                                                                               
+                                S1 set election timeout 949                                                                                             
+                                and current term: 4, state:1,                                                                                           
+                                logLength: 2                                                                                                            
+                                S1 persist                                                                                                              
+                                S1 set term to 5                                                                                                        
+S0 receive to S 1 true  with                                                                                                                            
+vote true with args:{5 0 1 4}                                                                                                                           
+S0 is state: 0                                                                                                                                          
+S0 send heartbeat to 1                                                                                                                                  
+S0 send heartbeat to 2                                                                                                                                  
+                                                              S2 set election timeout 871                                                               
+                                                              and current term: 5, state:1,                                                             
+                                                              logLength: 2                                                                              
+                                                              S2 receive heartBeat from 0                                                               
+                                S1 set election timeout 884                                                                                             
+                                and current term: 5, state:1,                                                                                           
+                                logLength: 2                                                                                                            
+                                S1 receive heartBeat from 0                                                                                             
+S0 leader add log [&{5 13}]                                                                                                                             
+S0 persist                                                                                                                                              
+S0 send append {5 0 1 4                                                                                                                                 
+[0xc000386858] -1} to 1 command                                                                                                                         
+[&{5 13}] first time                                                                                                                                    
+S0 send append {5 0 1 4                                                                                                                                 
+[0xc000386858] -1} to 2 command                                                                                                                         
+[&{5 13}] first time                                                                                                                                    
+                                S1 set election timeout 887                                                                                             
+                                and current term: 5, state:1,                                                                                           
+                                logLength: 2                                                                                                            
+                                S1 append log from 2 length 1                                                                                           
+                                from leader 0 entris [&{5                                                                                               
+                                13}]                                                                                                                    
+S0 receive from 1reply {0 true                                                                                                                          
+0} first time                                                                                                                                           
+                                                              S2 set election timeout 963                                                               
+                                                              and current term: 5, state:1,                                                             
+                                                              logLength: 2                                                                              
+S0 append [&{5 13}] to 1                                                                                                                                
+success first time                                                                                                                                      
+                                                              S2 append log from 2 length 1                                                             
+                                                              from leader 0 entris [&{5                                                                 
+                                                              13}]                                                                                      
+S0 receive from 2reply {0 true                                                                                                                          
+0} first time                                                                                                                                           
+S0 append [&{5 13}] to 2                                                                                                                                
+success first time                                                                                                                                      
+S0 commit 2 command 13                                                                                                                                  
+S0 persist                                                                                                                                              
+S0 is state: 0                                                                                                                                          
+S0 send heartbeat to 1                                                                                                                                  
+S0 send heartbeat to 2                                                                                                                                  
+                                                              S2 set election timeout 1058                                                              
+                                                              and current term: 5, state:1,                                                             
+                                                              logLength: 3                                                                              
+                                                              S2 receive heartBeat from 0                                                               
+                                                              S2 commit 2 command 13                                                                    
+                                                              S2 persist                                                                                
+                                S1 set election timeout 1074                                                                                            
+                                and current term: 5, state:1,                                                                                           
+                                logLength: 3                                                                                                            
+                                S1 receive heartBeat from 0                                                                                             
+                                S1 commit 2 command 13                                                                                                  
+                                S1 persist                                                                                                              
+                                S1 receive to S 0 false  with                                                                                           
+                                vote false with args:{1 1 -1                                                                                            
+                                0}                                                                                                                      
+                                S1 receive to S 2 false  with                                                                                           
+                                vote false with args:{3 1 0                                                                                             
+                                2}                                                                                                                      
+S0 receive to S 1 false  with                                                                                                                           
+vote false with args:{3 0 0 2}                                                                                                                          
+S0 is state: 0                                                                                                                                          
+S0 send heartbeat to 1                                                                                                                                  
+S0 send heartbeat to 2                                                                                                                                  
+                                                              S2 set election timeout 811                                                               
+                                                              and current term: 5, state:1,                                                             
+                                                              logLength: 3                                                                              
+                                                              S2 receive heartBeat from 0                                                               
+                                S1 set election timeout 836                                                                                             
+                                and current term: 5, state:1,                                                                                           
+                                logLength: 3                                                                                                            
+                                S1 receive heartBeat from 0                                                                                             
+S0 is state: 0                                                                                                                                          
+S0 send heartbeat to 1                                                                                                                                  
+S0 send heartbeat to 2                                                                                                                                  
+                                                              S2 set election timeout 802                                                               
+                                                              and current term: 5, state:1,                                                             
+                                                              logLength: 3                                                                              
+                                                              S2 receive heartBeat from 0                                                               
+                                S1 set election timeout 1015                                                                                            
+                                and current term: 5, state:1,                                                                                           
+                                logLength: 3                                                                                                            
+                                S1 receive heartBeat from 0                                                                                             
+                                S1 receive to S 2 false  with                                                                                           
+                                vote false with args:{1 1 -1                                                                                            
+                                0}                                                                                                                      
+S0 is state: 0                                                                                                                                          
+S0 send heartbeat to 1                                                                                                                                  
+S0 send heartbeat to 2                                                                                                                                  
+                                                              S2 set election timeout 933                                                               
+                                                              and current term: 5, state:1,                                                             
+                                                              logLength: 3                                                                              
+                                                              S2 receive heartBeat from 0                                                               
+                                S1 set election timeout 973                                                                                             
+                                and current term: 5, state:1,                                                                                           
+                                logLength: 3                                                                                                            
+                                S1 receive heartBeat from 0                                                                                             
+S0 set election timeout 994 and                                                                                                                         
+current term: 5, state:0,                                                                                                                               
+logLength: 3                                                                                                                                            
+S0 is state: 0                                                                                                                                          
+S0 send heartbeat to 1                                                                                                                                  
+S0 send heartbeat to 2                                                                                                                                  
+S0 is state: 0                                                                                                                                          
+S0 send heartbeat to 1                                                                                                                                  
+S0 send heartbeat to 2                                                                                                                                  
+S0 is state: 0                                                                                                                                          
+S0 send heartbeat to 1                                                                                                                                  
+S0 send heartbeat to 2                                                                                                                                  
+S0 receive to S 2 false  with                                                                                                                           
+vote false with args:{1 0 -1 0}                                                                                                                         
+S0 is state: 0                                                                                                                                          
+S0 send heartbeat to 1                                                                                                                                  
+S0 send heartbeat to 2                                                                                                                                  
+S0 is state: 0                                                                                                                                          
+S0 send heartbeat to 1                                                                                                                                  
+S0 send heartbeat to 2                                                                                                                                  
+S0 set election timeout 902 and                                                                                                                         
+current term: 5, state:0,                                                                                                                               
+logLength: 3                                                                                                                                            
+S0 is state: 0                                                                                                                                          
+S0 send heartbeat to 1                                                                                                                                  
+S0 send heartbeat to 2                                                                                                                                  
+                                                              S2 refresh timer                                                                          
+                                                              S2 set election timeout 840                                                               
+                                                              and current term: 5, state:1,                                                             
+                                                              logLength: 3                                                                              
+                                                              S2 persist                                                                                
+                                S1 vote 2                                                                                                               
+                                S1 set election timeout 868                                                                                             
+                                and current term: 5, state:1,                                                                                           
+                                logLength: 3                                                                                                            
+                                S1 persist                                                                                                              
+                                S1 set term to 6                                                                                                        
+                                                              S2 receive to S 1 true  with                                                              
+                                                              vote true with args:{6 2 2 5}                                                             
+                                                              S2 receive vote current vote                                                              
+                                                              :2                                                                                        
+                                                              s2 become leader                                                                          
+050164 S2 leader initaliaze
+                                                              S2 set election timeout 918                                                               
+                                                              and current term: 6, state:0,                                                             
+                                                              logLength: 3                                                                              
+                                                              S2 is state: 0                                                                            
+                                                              S2 send heartbeat to 0                                                                    
+                                                              S2 send heartbeat to 1                                                                    
+                                S1 set election timeout 891                                                                                             
+                                and current term: 6, state:1,                                                                                           
+                                logLength: 3                                                                                                            
+                                S1 receive heartBeat from 2                                                                                             
+                                                              S2 leader add log [&{6 14}]                                                               
+                                                              S2 persist                                                                                
+                                                              S2 send append {6 2 2 5                                                                   
+                                                              [0xc0002d2048] 2} to 0                                                                    
+                                                              command [&{6 14}] first time                                                              
+                                                              S2 send append {6 2 2 5                                                                   
+                                                              [0xc0002d2048] 2} to 1                                                                    
+                                                              command [&{6 14}] first time                                                              
+                                S1 set election timeout 1090                                                                                            
+                                and current term: 6, state:1,                                                                                           
+                                logLength: 3                                                                                                            
+                                S1 append log from 3 length 1                                                                                           
+                                from leader 2 entris [&{6                                                                                               
+                                14}]                                                                                                                    
+                                                              S2 receive from 1reply {0                                                                 
+                                                              true 0} first time                                                                        
+                                                              S2 append [&{6 14}] to 1                                                                  
+                                                              success first time                                                                        
+                                                              S2 commit 3 command 14                                                                    
+                                                              S2 persist                                                                                
+S0 is state: 0                                                                                                                                          
+S0 send heartbeat to 1                                                                                                                                  
+S0 send heartbeat to 2                                                                                                                                  
+                                                              S2 is state: 0                                                                            
+                                                              S2 send heartbeat to 0                                                                    
+                                                              S2 send heartbeat to 1                                                                    
+                                S1 set election timeout 1031                                                                                            
+                                and current term: 6, state:1,                                                                                           
+                                logLength: 4                                                                                                            
+                                S1 receive heartBeat from 2                                                                                             
+                                S1 commit 3 command 14                                                                                                  
+                                S1 persist                                                                                                              
+S0 is killed                                                                                                                                            
+S0 readPersist                                                                                                                                          
+S0 is made with lastapplied 2                                                                                                                           
+S0 is state: 0                                                                                                                                          
+                                                              S2 is state: 0                                                                            
+                                                              S2 send heartbeat to 0                                                                    
+                                                              S2 send heartbeat to 1                                                                    
+                                S1 set election timeout 973                                                                                             
+                                and current term: 6, state:1,                                                                                           
+                                logLength: 4                                                                                                            
+                                S1 receive heartBeat from 2                                                                                             
+S0 set election timeout 1052                                                                                                                            
+and current term: 5, state:1,                                                                                                                           
+logLength: 3                                                                                                                                            
+S0 persist                                                                                                                                              
+                                S1 refuse vote to 0                                                                                                     
+S0 receive to S 1 true  with                                                                                                                            
+vote false with args:{6 0 2 5}                                                                                                                          
+                                                              S2 refuse vote to 0                                                                       
+S0 receive to S 2 true  with                                                                                                                            
+vote false with args:{6 0 2 5}                                                                                                                          
+                                                              S2 is state: 0                                                                            
+                                                              S2 send heartbeat to 0                                                                    
+                                                              S2 send heartbeat to 1                                                                    
+                                S1 set election timeout 856                                                                                             
+                                and current term: 6, state:1,                                                                                           
+                                logLength: 4                                                                                                            
+                                S1 receive heartBeat from 2                                                                                             
+S0 set election timeout 927 and                                                                                                                         
+current term: 6, state:2,                                                                                                                               
+logLength: 3                                                                                                                                            
+S0 receive heartBeat from 2                                                                                                                             
+                                                              S2 is state: 0                                                                            
+                                                              S2 send heartbeat to 0                                                                    
+                                                              S2 send heartbeat to 1                                                                    
+S0 set election timeout 994 and                                                                                                                         
+current term: 6, state:1,                                                                                                                               
+logLength: 3                                                                                                                                            
+S0 receive heartBeat from 2                                                                                                                             
+                                S1 set election timeout 911                                                                                             
+                                and current term: 6, state:1,                                                                                           
+                                logLength: 4                                                                                                            
+                                S1 receive heartBeat from 2                                                                                             
+                                                              S2 append [&{6 14}] to 0                                                                  
+                                                              failed first time with time                                                               
+                                                              635.722589ms                                                                              
+                                                              S2 set election timeout 946                                                               
+                                                              and current term: 6, state:0,                                                             
+                                                              logLength: 4                                                                              
+S0 set election timeout 902 and                                                                                                                         
+current term: 6, state:1,                                                                                                                               
+logLength: 3                                                                                                                                            
+S0 append log from 3 length 1                                                                                                                           
+from leader 2 entris [&{6 14}]                                                                                                                          
+                                                              S2 receive from 0reply {0                                                                 
+                                                              true 0} first time                                                                        
+                                                              S2 append [&{6 14}] to 0                                                                  
+                                                              success first time                                                                        
+                                                              S2 is state: 0                                                                            
+                                                              S2 send heartbeat to 0                                                                    
+                                                              S2 send heartbeat to 1                                                                    
+S0 set election timeout 863 and                                                                                                                         
+current term: 6, state:1,                                                                                                                               
+logLength: 4                                                                                                                                            
+                                S1 set election timeout 837                                                                                             
+                                and current term: 6, state:1,                                                                                           
+                                logLength: 4                                                                                                            
+S0 receive heartBeat from 2                                                                                                                             
+                                S1 receive heartBeat from 2                                                                                             
+S0 commit 3 command 14                                                                                                                                  
+S0 persist                                                                                                                                              
+                                                              S2 is state: 0                                                                            
+                                                              S2 send heartbeat to 0                                                                    
+                                                              S2 send heartbeat to 1                                                                    
+                                S1 set election timeout 978                                                                                             
+                                and current term: 6, state:1,                                                                                           
+                                logLength: 4                                                                                                            
+                                S1 receive heartBeat from 2                                                                                             
+S0 set election timeout 953 and                                                                                                                         
+current term: 6, state:1,                                                                                                                               
+logLength: 4                                                                                                                                            
+S0 receive heartBeat from 2                                                                                                                             
+                                                              S2 is state: 0                                                                            
+                                                              S2 send heartbeat to 0                                                                    
+                                                              S2 send heartbeat to 1                                                                    
+                                S1 set election timeout 809                                                                                             
+                                and current term: 6, state:1,                                                                                           
+                                logLength: 4                                                                                                            
+                                S1 receive heartBeat from 2                                                                                             
+S0 set election timeout 956 and                                                                                                                         
+current term: 6, state:1,                                                                                                                               
+logLength: 4                                                                                                                                            
+S0 receive heartBeat from 2                                                                                                                             
+                                                              S2 is state: 0                                                                            
+                                                              S2 send heartbeat to 0                                                                    
+                                                              S2 send heartbeat to 1                                                                    
+                                S1 set election timeout 872                                                                                             
+                                and current term: 6, state:1,                                                                                           
+                                logLength: 4                                                                                                            
+                                S1 receive heartBeat from 2                                                                                             
+S0 set election timeout 929 and                                                                                                                         
+current term: 6, state:1,                                                                                                                               
+logLength: 4                                                                                                                                            
+S0 receive heartBeat from 2                                                                                                                             
+                                                              S2 receive to S 0 false  with                                                             
+                                                              vote false with args:{6 2 2                                                               
+                                                              5}                                                                                        
+                                                              S2 is state: 0                                                                            
+                                                              S2 send heartbeat to 0                                                                    
+                                                              S2 send heartbeat to 1                                                                    
+                                S1 set election timeout 1050                                                                                            
+                                and current term: 6, state:1,                                                                                           
+                                logLength: 4                                                                                                            
+                                S1 receive heartBeat from 2                                                                                             
+S0 set election timeout 1046                                                                                                                            
+and current term: 6, state:1,                                                                                                                           
+logLength: 4                                                                                                                                            
+S0 receive heartBeat from 2                                                                                                                             
+                                                              S2 set election timeout 943                                                               
+                                                              and current term: 6, state:0,                                                             
+                                                              logLength: 4                                                                              
+                                                              S2 leader add log [&{6 15}]                                                               
+                                                              S2 persist                                                                                
+                                                              S2 send append {6 2 3 6                                                                   
+                                                              [0xc00033ee10] 3} to 0                                                                    
+                                                              command [&{6 15}] first time                                                              
+                                                              S2 send append {6 2 3 6                                                                   
+                                                              [0xc00033ee10] 3} to 1                                                                    
+                                                              command [&{6 15}] first time                                                              
+                                S1 set election timeout 888                                                                                             
+                                and current term: 6, state:1,                                                                                           
+                                logLength: 4                                                                                                            
+                                S1 append log from 4 length 1                                                                                           
+                                from leader 2 entris [&{6                                                                                               
+                                15}]                                                                                                                    
+                                                              S2 receive from 1reply {0                                                                 
+                                                              true 0} first time                                                                        
+                                                              S2 append [&{6 15}] to 1                                                                  
+                                                              success first time                                                                        
+                                                              S2 commit 4 command 15                                                                    
+                                                              S2 persist                                                                                
+                                                              S2 is state: 0                                                                            
+                                                              S2 send heartbeat to 0                                                                    
+                                                              S2 send heartbeat to 1                                                                    
+                                S1 set election timeout 871                                                                                             
+                                and current term: 6, state:1,                                                                                           
+                                logLength: 5                                                                                                            
+                                S1 receive heartBeat from 2                                                                                             
+                                S1 commit 4 command 15                                                                                                  
+                                S1 persist                                                                                                              
+S0 is killed                                                                                                                                            
+S0 readPersist                                                                                                                                          
+S0 is made with lastapplied 3                                                                                                                           
+                                                              S2 is state: 0                                                                            
+                                                              S2 send heartbeat to 0                                                                    
+                                                              S2 send heartbeat to 1                                                                    
+                                S1 set election timeout 944                                                                                             
+                                and current term: 6, state:1,                                                                                           
+                                logLength: 5                                                                                                            
+                                S1 receive heartBeat from 2                                                                                             
+                                                              S2 leader add log [&{6 16}]                                                               
+S0 set election timeout 1052                                                                                                                            
+and current term: 6, state:1,                                                                                                                           
+logLength: 4                                                                                                                                            
+S0 persist                                                                                                                                              
+                                                              S2 persist                                                                                
+                                                              S2 persist                                                                                
+                                                              S2 set term to 7                                                                          
+                                S1 persist                                                                                                              
+                                S1 set term to 7                                                                                                        
+S0 receive to S 2 true  with                                                                                                                            
+vote false with args:{7 0 3 6}                                                                                                                          
+S0 receive to S 1 true  with                                                                                                                            
+vote false with args:{7 0 3 6}                                                                                                                          
+                                                              S2 is state: 1                                                                            
+                                S1 receive to S 0 false  with                                                                                           
+                                vote false with args:{3 1 0                                                                                             
+                                2}                                                                                                                      
+                                                              S2 set election timeout 817                                                               
+                                                              and current term: 7, state:1,                                                             
+                                                              logLength: 6                                                                              
+                                                              S2 persist                                                                                
+S0 vote 2                                                                                                                                               
+S0 set election timeout 927 and                                                                                                                         
+current term: 7, state:1,                                                                                                                               
+logLength: 4                                                                                                                                            
+S0 persist                                                                                                                                              
+S0 set term to 8                                                                                                                                        
+                                S1 vote 2                                                                                                               
+                                S1 set election timeout 943                                                                                             
+                                and current term: 7, state:1,                                                                                           
+                                logLength: 5                                                                                                            
+                                S1 persist                                                                                                              
+                                S1 set term to 8                                                                                                        
+                                                              S2 receive to S 0 true  with                                                              
+                                                              vote true with args:{8 2 5 6}                                                             
+                                                              S2 receive vote current vote                                                              
+                                                              :2                                                                                        
+                                                              s2 become leader                                                                          
+071183 S2 leader initaliaze
+                                                              S2 set election timeout 909                                                               
+                                                              and current term: 8, state:0,                                                             
+                                                              logLength: 6                                                                              
+                                                              S2 receive to S 1 true  with                                                              
+                                                              vote true with args:{8 2 5 6}                                                             
+                                                              S2 is state: 0                                                                            
+                                                              S2 send heartbeat to 0                                                                    
+                                                              S2 send heartbeat to 1                                                                    
+                                S1 set election timeout 923                                                                                             
+                                and current term: 8, state:1,                                                                                           
+                                logLength: 5                                                                                                            
+                                S1 receive heartBeat from 2                                                                                             
+S0 set election timeout 994 and                                                                                                                         
+current term: 8, state:1,                                                                                                                               
+logLength: 4                                                                                                                                            
+S0 receive heartBeat from 2                                                                                                                             
+                                                              S2 is state: 0                                                                            
+                                                              S2 send heartbeat to 0                                                                    
+                                                              S2 send heartbeat to 1                                                                    
+                                S1 set election timeout 859                                                                                             
+                                and current term: 8, state:1,                                                                                           
+                                logLength: 5                                                                                                            
+                                S1 receive heartBeat from 2                                                                                             
+S0 set election timeout 902 and                                                                                                                         
+current term: 8, state:1,                                                                                                                               
+logLength: 4                                                                                                                                            
+S0 receive heartBeat from 2                                                                                                                             
+S0 refresh timer                                                                                                                                        
+                                                              S2 is state: 0                                                                            
+                                                              S2 send heartbeat to 0                                                                    
+                                                              S2 send heartbeat to 1                                                                    
+                                S1 set election timeout 1003                                                                                            
+                                and current term: 8, state:1,                                                                                           
+                                logLength: 5                                                                                                            
+                                S1 receive heartBeat from 2                                                                                             
+S0 set election timeout 863 and                                                                                                                         
+current term: 8, state:1,                                                                                                                               
+logLength: 4                                                                                                                                            
+S0 receive heartBeat from 2                                                                                                                             
+                                                              S2 is state: 0                                                                            
+                                                              S2 send heartbeat to 0                                                                    
+                                                              S2 send heartbeat to 1                                                                    
+                                S1 set election timeout 939                                                                                             
+                                and current term: 8, state:1,                                                                                           
+                                logLength: 5                                                                                                            
+                                S1 receive heartBeat from 2                                                                                             
+S0 set election timeout 953 and                                                                                                                         
+current term: 8, state:1,                                                                                                                               
+logLength: 4                                                                                                                                            
+S0 receive heartBeat from 2                                                                                                                             
+                                                              S2 is state: 0                                                                            
+                                                              S2 send heartbeat to 0                                                                    
+                                                              S2 send heartbeat to 1                                                                    
+                                S1 set election timeout 1083                                                                                            
+                                and current term: 8, state:1,                                                                                           
+                                logLength: 5                                                                                                            
+                                S1 receive heartBeat from 2                                                                                             
+S0 set election timeout 956 and                                                                                                                         
+current term: 8, state:1,                                                                                                                               
+logLength: 4                                                                                                                                            
+S0 receive heartBeat from 2                                                                                                                             
+                                                              S2 set election timeout 1020                                                              
+                                                              and current term: 8, state:0,                                                             
+                                                              logLength: 6                                                                              
+                                                              S2 is state: 0                                                                            
+                                                              S2 send heartbeat to 0                                                                    
+                                                              S2 send heartbeat to 1                                                                    
+                                S1 set election timeout 907                                                                                             
+                                and current term: 8, state:1,                                                                                           
+                                logLength: 5                                                                                                            
+                                S1 receive heartBeat from 2                                                                                             
+S0 set election timeout 929 and                                                                                                                         
+current term: 8, state:1,                                                                                                                               
+logLength: 4                                                                                                                                            
+S0 receive heartBeat from 2                                                                                                                             
+                                                              S2 is state: 0                                                                            
+                                                              S2 send heartbeat to 0                                                                    
+                                                              S2 send heartbeat to 1                                                                    
+S0 set election timeout 1046                                                                                                                            
+and current term: 8, state:1,                                                                                                                           
+logLength: 4                                                                                                                                            
+S0 receive heartBeat from 2                                                                                                                             
+                                S1 set election timeout 932                                                                                             
+                                and current term: 8, state:1,                                                                                           
+                                logLength: 5                                                                                                            
+                                S1 receive heartBeat from 2                                                                                             
+                                                              S2 is state: 0                                                                            
+                                                              S2 send heartbeat to 0                                                                    
+                                                              S2 send heartbeat to 1                                                                    
+                                S1 set election timeout 980                                                                                             
+                                and current term: 8, state:1,                                                                                           
+                                logLength: 5                                                                                                            
+                                S1 receive heartBeat from 2                                                                                             
+S0 set election timeout 1016                                                                                                                            
+and current term: 8, state:1,                                                                                                                           
+logLength: 4                                                                                                                                            
+S0 receive heartBeat from 2                                                                                                                             
+                                                              S2 is state: 0                                                                            
+                                                              S2 send heartbeat to 0                                                                    
+                                                              S2 send heartbeat to 1                                                                    
+                                S1 set election timeout 915                                                                                             
+                                and current term: 8, state:1,                                                                                           
+                                logLength: 5                                                                                                            
+                                S1 receive heartBeat from 2                                                                                             
+S0 set election timeout 908 and                                                                                                                         
+current term: 8, state:1,                                                                                                                               
+logLength: 4                                                                                                                                            
+S0 receive heartBeat from 2                                                                                                                             
+S0 receive to S 2 false  with                                                                                                                           
+vote false with args:{3 0 0 2}                                                                                                                          
+                                                              S2 is state: 0                                                                            
+                                                              S2 send heartbeat to 0                                                                    
+                                                              S2 send heartbeat to 1                                                                    
+                                S1 set election timeout 816                                                                                             
+                                and current term: 8, state:1,                                                                                           
+                                logLength: 5                                                                                                            
+                                S1 receive heartBeat from 2                                                                                             
+S0 set election timeout 959 and                                                                                                                         
+current term: 8, state:1,                                                                                                                               
+logLength: 4                                                                                                                                            
+S0 receive heartBeat from 2                                                                                                                             
+                                                              S2 set election timeout 810                                                               
+                                                              and current term: 8, state:0,                                                             
+                                                              logLength: 6                                                                              
+                                                              S2 is state: 0                                                                            
+                                                              S2 send heartbeat to 0                                                                    
+                                                              S2 send heartbeat to 1                                                                    
+                                S1 set election timeout 920                                                                                             
+                                and current term: 8, state:1,                                                                                           
+                                logLength: 5                                                                                                            
+                                S1 receive heartBeat from 2                                                                                             
+S0 set election timeout 998 and                                                                                                                         
+current term: 8, state:1,                                                                                                                               
+logLength: 4                                                                                                                                            
+S0 receive heartBeat from 2                                                                                                                             
+                                                              S2 leader add log [&{8 16}]                                                               
+                                                              S2 persist                                                                                
+                                                              S2 send append {8 2 5 6                                                                   
+                                                              [0xc0002d3c80] 4} to 0                                                                    
+                                                              command [&{8 16}] first time                                                              
+S0 set election timeout 820 and                                                                                                                         
+current term: 8, state:1,                                                                                                                               
+logLength: 4                                                                                                                                            
+S0 search term 6 index 5                                                                                                                                
+S0 refuse to apeend args: &{8 2                                                                                                                         
+5 6 [0xc0002d3f98] 4} [&{8 16}]                                                                                                                         
+from 2 with conflictIndex 3                                                                                                                             
+                                                              S2 receive from 0reply {0                                                                 
+                                                              false 3} first time                                                                       
+                                                              S2 receive from 0reply {0                                                                 
+                                                              false 3}                                                                                  
+                                                              S2 send reappend {8 2 3 6                                                                 
+                                                              [0xc00033ee10 0xc0003e7ad0                                                                
+                                                              0xc0002d3c80] 4} to 0 command                                                             
+                                                              [&{6 15} &{6 16} &{8 16}]                                                                 
+S0 set election timeout 1049                                                                                                                            
+and current term: 8, state:1,                                                                                                                           
+logLength: 4                                                                                                                                            
+S0 append log from 4 length 3                                                                                                                           
+from leader 2 entris [&{6 15}                                                                                                                           
+&{6 16} &{8 16}]                                                                                                                                        
+                                                              S2 append [&{6 15} &{6 16}                                                                
+                                                              &{8 16}] to 0 success next                                                                
+                                                              time                                                                                      
+                                                              S2 send append {8 2 5 6                                                                   
+                                                              [0xc0002d3c80] 4} to 1                                                                    
+                                                              command [&{8 16}] first time                                                              
+                                S1 set election timeout 1071                                                                                            
+                                and current term: 8, state:1,                                                                                           
+                                logLength: 5                                                                                                            
+                                S1 search term 6 index 5                                                                                                
+                                S1 refuse to apeend args: &{8                                                                                           
+                                2 5 6 [0xc00046e558] 4} [&{8                                                                                            
+                                16}] from 2 with                                                                                                        
+                                conflictIndex 4                                                                                                         
+                                                              S2 receive from 1reply {0                                                                 
+                                                              false 4} first time                                                                       
+                                                              S2 receive from 1reply {0                                                                 
+                                                              false 4}                                                                                  
+                                                              S2 send reappend {8 2 4 6                                                                 
+                                                              [0xc0003e7ad0 0xc0002d3c80]                                                               
+                                                              4} to 1 command [&{6 16} &{8                                                              
+                                                              16}]                                                                                      
+                                S1 set election timeout 1052                                                                                            
+                                and current term: 8, state:1,                                                                                           
+                                logLength: 5                                                                                                            
+                                S1 append log from 5 length 2                                                                                           
+                                from leader 2 entris [&{6 16}                                                                                           
+                                &{8 16}]                                                                                                                
+                                                              S2 append [&{6 16} &{8 16}]                                                               
+                                                              to 1 success next time                                                                    
+                                                              S2 commit 5 command 16                                                                    
+                                                              S2 commit 6 command 16                                                                    
+                                                              S2 persist                                                                                
+                                                              S2 is state: 0                                                                            
+                                                              S2 send heartbeat to 0                                                                    
+                                                              S2 send heartbeat to 1                                                                    
+                                S1 set election timeout 1007                                                                                            
+                                and current term: 8, state:1,                                                                                           
+                                logLength: 7                                                                                                            
+                                S1 receive heartBeat from 2                                                                                             
+                                S1 commit 5 command 16                                                                                                  
+                                S1 commit 6 command 16                                                                                                  
+                                S1 persist                                                                                                              
+S0 set election timeout 875 and                                                                                                                         
+current term: 8, state:1,                                                                                                                               
+logLength: 7                                                                                                                                            
+S0 receive heartBeat from 2                                                                                                                             
+S0 commit 4 command 15                                                                                                                                  
+S0 commit 5 command 16                                                                                                                                  
+S0 commit 6 command 16                                                                                                                                  
+S0 persist                                                                                                                                              
+S0 is killed                                                                                                                                            
+                                S1 is killed                                                                                                            
+                                                              S2 is killed                                                                              
+########################################################################################################################################################
+PASS

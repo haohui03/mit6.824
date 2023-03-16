@@ -55,31 +55,55 @@ func Worker(mapf func(string, string) []KeyValue,
 	args.State = "free"
 	ch := make(chan string)
 	change := make(chan string)
+	var argLock sync.Mutex
+	go func() {
+		for {
+			argLock.Lock()
+			log.Println(os.Getpid(), args.State)
+			argLock.Unlock()
+			time.Sleep(1 * time.Second)
+		}
+	}()
+
 	go func() {
 		tick := time.NewTicker(1 * time.Second)
 		for {
 			select {
 			case state := <-change:
-				//fmt.Printf("%d set to %s\n", args.Pid, state)
+				//log.Printf("%d set to %s\n", args.Pid, state)
+				argLock.Lock()
 				args.State = state
+				argLock.Unlock()
 			case <-tick.C:
+				argLock.Lock()
 				err := call("Master.Assign", &args, &reply)
 				if !err {
+					os.Exit(1)
+				}
+				log.Printf("%d 安排的任务:%s \n", args.Pid, reply.Task)
+				switch reply.Task {
+				case "setfree":
+					args.State = "free"
+					argLock.Unlock()
+					continue
+				case "exit":
 					os.Exit(0)
+				case "waiting":
+					argLock.Unlock()
+					continue
 				}
-				//fmt.Printf("%d 安排的任务:%s \n", args.Pid, reply.Task)
-				if reply.Task != "waiting" {
-					ch <- reply.Task
-				}
+				args.State = "working"
+				ch <- reply.Task
 
+				argLock.Unlock()
 			}
 		}
 	}()
+outer:
 	for {
 		switch <-ch {
 		case "map":
-			//fmt.Printf("%d  %s", args.Pid, reply.Filename)
-			change <- "working"
+			//log.Printf("%d  %s", args.Pid, reply.Filename)
 			file, err := os.Open(reply.Filename)
 			if err != nil {
 				log.Fatalf("cannot open %v", reply.Filename)
@@ -89,17 +113,21 @@ func Worker(mapf func(string, string) []KeyValue,
 				log.Fatalf("cannot read %v", reply.Filename)
 			}
 			file.Close()
-			mapch := make(chan int)
+			mapch := make(chan struct{})
 			kva := make([]KeyValue, 1000)
 			go func() {
 				kva = mapf(reply.Filename, string(content))
-				mapch <- 1
+
+				mapch <- struct{}{}
+
 			}()
 			select {
 			case <-mapch:
 			case <-time.After(5 * time.Second):
+				log.Printf("pid: %d, quit by fail\n", os.Getpid())
 				change <- "fail"
-				continue
+				continue outer
+				// os.Exit(2)
 			}
 			groups := make([][]KeyValue, reply.Nreduce)
 			tmpfiles := make([]*os.File, reply.Nreduce)
@@ -133,7 +161,6 @@ func Worker(mapf func(string, string) []KeyValue,
 			wg.Wait()
 			change <- "done"
 		case "reduce":
-			change <- "working"
 			filelist, err := filepath.Glob(fmt.Sprintf("./mr-[0-9]-%d", reply.Tasknumber-1))
 			//fmt.Println(filelist)
 			if err != nil {
@@ -156,7 +183,7 @@ func Worker(mapf func(string, string) []KeyValue,
 			}
 
 			sort.Sort(ByKey(kva))
-			//fmt.Printf("length of kva:%d\n", len(kva))
+			// fmt.Printf("length of kva:%d\n", len(kva))
 			outputfilename := fmt.Sprintf("mr-out-%d", reply.Tasknumber)
 			os.Remove(outputfilename)
 			ofile, err := os.Create(outputfilename)
@@ -173,25 +200,33 @@ func Worker(mapf func(string, string) []KeyValue,
 				for k := i; k < j; k++ {
 					values = append(values, kva[k].Value)
 				}
-				choutput := make(chan string)
-				go func() { choutput <- reducef(kva[i].Key, values) }()
-				var output string
+				var reduceOut string
+				reduceCh := make(chan struct{})
+				go func() {
+					reduceOut = reducef(kva[i].Key, values)
+					// select {
+					// case
+					reduceCh <- struct{}{}
+					// default:
+					// 	log.Printf("pid: %d  return ", os.Getpid())
+					// 	return
+					// }
+				}()
 				select {
-				case output = <-choutput:
-				case <-time.After(5 * time.Second):
+				case <-reduceCh:
+				case <-time.After(6 * time.Second):
 					change <- "fail"
-					continue
+					continue outer
+					// os.Exit(2)
 				}
 				// this is the correct format for each line of Reduce output.
-				fmt.Fprintf(ofile, "%v %v\n", kva[i].Key, output)
+				fmt.Fprintf(ofile, "%v %v\n", kva[i].Key, reduceOut)
 				i = j
 			}
+			fmt.Println("done reduce")
 			change <- "done"
 			//fmt.Println("reduce done")
-		case "setfree":
-			change <- "free"
-		case "exit":
-			os.Exit(0)
+
 		}
 
 	}
@@ -240,6 +275,6 @@ func call(rpcname string, args interface{}, reply interface{}) bool {
 		return true
 	}
 
-	fmt.Println(err)
+	log.Println(err)
 	return false
 }

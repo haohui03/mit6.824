@@ -1,5 +1,6 @@
 # In Search of an Understandable Consensus Algorithm (Extended Version)
 
+![](general.JPG)
 ## Abstract
     In order to enhance understandability,Raft separates the key elements ofconsensus, such as leader election, logreplication, and safety, and itenforces a stronger degree of coherencyto reduce the number of states that must be considered.
 ## introduction
@@ -77,6 +78,8 @@ If a follower receives no communication over a period of time called the electio
 A log entry is committed once the leader
 that created the entry has replicated it on a majority of the servers (e.g., entry 7 in Figure 6).
 
+**Log Matching Property**
+
     If two entries in different logs have the same index and term, then they store the same command.
     • If two entries in different logs have the same index and term, then the logs are identical in all preceding entries.
 
@@ -129,6 +132,62 @@ as non-voting members (the leader replicates log entries to them, but they are n
 
 - The third issue is that removed servers (those not in Cnew) can disrupt the cluster. These servers will not receive heartbeats, so they will time out and start new elections. They will then send RequestVote RPCs with new term numbers, and this will cause the current leader to revert to follower state. A new leader will eventually be elected, but the removed servers will time out again and the process will repeat, resulting in poor availability
 
+## Implementation details
+
+### Leader election
+
+#### Leaders:
+
+#### Follower:
+- A server remains in follower state as long as it receives valid RPCs from a leader or candidate.
+
+- If a follower receives no communication over a period of time called the *election timeout*
+
+#### Candidate:
+- To begin an election, a follower increments its current
+term and transitions to candidate state. It then votes for itself and issues RequestVote RPCs in parallel to each of the other servers in the cluster. A candidate continues in this state until one of three things happens: 
+    - (a) it wins the election, 
+    - (b) another server establishes itself as leader, or 
+    - (c) a period of time goes by with no winner. These outcomes are discussed separately in the paragraphs below.(increment term and initiating another round of RequestVote RPCs justified by random election timeout)
+
+- Each server will vote for at most one candidate in *a given term*, on a first-come-first-served basis
+
+### Log replication
+
+#### Leader:
+- If followers crash or run slowly, or if network packets are lost, the leader retries AppendEntries RPCs indefinitely (even after it has responded to the client) until all followers eventually store all log entries.
+
+- The leader decides when it is safe to apply a log entry to the state machines(committed); 
+    >A log entry is committed once the leader that created the entry has replicated it on a majority of the servers (e.g., entry 7 in Figure 6).
+
+- **The leader keeps track of the highest index it knows to be committed, and it includes that index in future AppendEntries RPCs (including heartbeats) so that the other servers eventually find out. Once a follower learns that a log entry is committed, it applies the entry to its local state machine (in log order).**(这样可以确保已经复制了的entry最终可以被apply)
+
+- The leader maintains a nextIndex for each follower, which is the index of the next log entry the leader will send to that follower. When a leader first comes to power, it initializes all nextIndex values to the index just after the last one in its log (11 in Figure 7).
+
+- If a follower’s log is
+inconsistent with the leader’s, the AppendEntries consistency check will fail in the next AppendEntries RPC. After a rejection, the leader decrements nextIndex and retries
+the AppendEntries RPC. Eventually nextIndex will reach a point where the leader and follower logs match. When this happens, AppendEntries will succeed, which removes
+any conflicting entries in the follower’s log and appends entries from the leader’s log (if any). Once AppendEntries succeeds, the follower’s log is consistent with the leader’s,
+and it will remain that way for the rest of the term.
+- A leader never overwrites or
+deletes entries in its own log (the Leader Append-Only
+Property in Figure 3).
+- **To eliminate problems like the one in Figure 8, Raft
+never commits log entries from previous terms by counting replicas. Only log entries from the leader’s current
+term are committed by counting replicas; once an entry
+from the current term has been committed in this way,
+then all prior entries are committed indirectly because
+of the Log Matching Property.**
+#### log backtracking optimization
+- If a follower does not have ```prevLogIndex``` in its log, it should return with ```conflictIndex = len(log)``` and ```conflictTerm = None```.
+- If a follower does have ```prevLogIndex``` in its log, but the term does not match, it should return ```conflictTerm = log[prevLogIndex].Term```, and then search its log for the first index whose entry has term equal to ```conflictTerm```.
+
+- Upon receiving a conflict response, the leader should first search its log for ```conflictTerm```. If it finds an entry in its log with that term, it should set ```nextIndex``` to be the one beyond the index of the last entry in that term in its log.
+- If it does not find an entry with that term, it should set ```nextIndex = conflictIndex.```
+
+#### Solve inconsistency 
+- To bring a follower’s log into consistency with its own, the leader must find the latest log entry where the two logs agree, delete any entries in the follower’s log after
+that point, and send the follower all of the leader’s entries after that point. 
 ---
 ## Link
 ### [chinese translation](https://zhuanlan.zhihu.com/p/65402077)
@@ -136,3 +195,5 @@ as non-voting members (the leader replicates log entries to them, but they are n
 ### [blog](https://zhuanlan.zhihu.com/p/32052223)
 
 ### [[1]](https://blog.csdn.net/wahaha13168/article/details/80808220)
+
+### [students-guide-to-raft](https://thesquareplanet.com/blog/students-guide-to-raft/)

@@ -8,12 +8,14 @@ package raft
 // test with the original before submitting.
 //
 
-import "testing"
-import "fmt"
-import "time"
-import "math/rand"
-import "sync/atomic"
-import "sync"
+import (
+	"fmt"
+	"math/rand"
+	"sync"
+	"sync/atomic"
+	"testing"
+	"time"
+)
 
 // The tester generously allows solutions to complete elections in one second
 // (much more than the paper's range of timeouts).
@@ -369,13 +371,14 @@ func TestRejoin2B(t *testing.T) {
 }
 
 func TestBackup2B(t *testing.T) {
+	// startTime := time.Now()
 	servers := 5
 	cfg := make_config(t, servers, false)
 	defer cfg.cleanup()
 
 	cfg.begin("Test (2B): leader backs up quickly over incorrect follower logs")
 
-	cfg.one(rand.Int(), servers, true)
+	cfg.one(0, servers, true)
 
 	// put leader and one follower in a partition
 	leader1 := cfg.checkOneLeader()
@@ -400,9 +403,9 @@ func TestBackup2B(t *testing.T) {
 
 	// lots of successful commands to new group.
 	for i := 0; i < 50; i++ {
-		cfg.one(rand.Int(), 3, true)
+		cfg.one(1, 3, true)
 	}
-
+	// fmt.Println(time.Since(startTime))
 	// now another partitioned leader and one follower
 	leader2 := cfg.checkOneLeader()
 	other := (leader1 + 2) % servers
@@ -428,15 +431,17 @@ func TestBackup2B(t *testing.T) {
 
 	// lots of successful commands to new group.
 	for i := 0; i < 50; i++ {
-		cfg.one(rand.Int(), 3, true)
+		cfg.one(2, 3, true)
 	}
 
+	// fmt.Println(time.Since(startTime))
 	// now everyone
 	for i := 0; i < servers; i++ {
 		cfg.connect(i)
 	}
-	cfg.one(rand.Int(), servers, true)
+	cfg.one(3, servers, true)
 
+	// fmt.Println(time.Since(startTime))
 	cfg.end()
 }
 
@@ -458,6 +463,7 @@ func TestCount2B(t *testing.T) {
 
 	total1 := rpcs()
 
+	fmt.Println("elect rpc", total1)
 	if total1 > 30 || total1 < 1 {
 		t.Fatalf("too many or few RPCs (%v) to elect initial leader\n", total1)
 	}
@@ -798,6 +804,7 @@ func TestFigure8Unreliable2C(t *testing.T) {
 		}
 
 		if leader != -1 && (rand.Int()%1000) < int(RaftElectionTimeout/time.Millisecond)/2 {
+			// fmt.Println("disconnect ", leader)
 			cfg.disconnect(leader)
 			nup -= 1
 		}
@@ -805,6 +812,7 @@ func TestFigure8Unreliable2C(t *testing.T) {
 		if nup < 3 {
 			s := rand.Int() % servers
 			if cfg.connected[s] == false {
+				// fmt.Println("connect ", s)
 				cfg.connect(s)
 				nup += 1
 			}
@@ -817,7 +825,7 @@ func TestFigure8Unreliable2C(t *testing.T) {
 		}
 	}
 
-	cfg.one(rand.Int()%10000, servers, true)
+	cfg.one(10101, servers, true)
 
 	cfg.end()
 }

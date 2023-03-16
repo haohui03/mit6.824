@@ -1,13 +1,22 @@
 package raft
 
-import "log"
+import (
+	"fmt"
+	"reflect"
+)
 
-// Debugging
-const Debug = 0
-
-func DPrintf(format string, a ...interface{}) (n int, err error) {
-	if Debug > 0 {
-		log.Printf(format, a...)
+func Min(a, b int) int {
+	if a < b {
+		return a
 	}
-	return
+	return b
+}
+
+func SEntries(entries []*Entry) []string {
+	str := []string{}
+	for _, v := range entries {
+		subStr := fmt.Sprintf("%v", reflect.ValueOf(v))
+		str = append(str, subStr)
+	}
+	return str
 }

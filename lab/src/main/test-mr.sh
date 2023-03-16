@@ -181,6 +181,12 @@ SOCKNAME=/var/tmp/824-mr-`id -u`
     sleep 1
   done ) &
 
+( while [ -e $SOCKNAME -a ! -f mr-done ]
+  do
+    timeout -k 2s 180s ../mrworker ../../mrapps/crash.so
+    sleep 1
+  done ) &
+
 while [ -e $SOCKNAME -a ! -f mr-done ]
 do
   timeout -k 2s 180s ../mrworker ../../mrapps/crash.so
