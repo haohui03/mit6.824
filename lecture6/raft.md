@@ -188,6 +188,13 @@ of the Log Matching Property.**
 #### Solve inconsistency 
 - To bring a follower’s log into consistency with its own, the leader must find the latest log entry where the two logs agree, delete any entries in the follower’s log after
 that point, and send the follower all of the leader’s entries after that point. 
+
+#### Strong consistency
+
+    - definition: If called one at a time, the Get/Put/Append methods should act as if the system had only one copy of its state, and each call should observe the modifications to the state implied by the preceding sequence of calls. For concurrent calls, the return values and final state must be the same as if the operations had executed one at a time in some order.
+
+    Furthermore, a call must observe the effects of all calls that have completed before the call starts (so we are technically asking for linearizability).
+
 ---
 ## Link
 ### [chinese translation](https://zhuanlan.zhihu.com/p/65402077)

@@ -1,5 +1,7 @@
 package kvraft
 
+import "../labgob"
+
 const (
 	OK             = "OK"
 	ErrNoKey       = "ErrNoKey"
@@ -30,4 +32,11 @@ type GetArgs struct {
 type GetReply struct {
 	Err   Err
 	Value string
+}
+
+func init() {
+	labgob.Register(GetReply{})
+	labgob.Register(GetArgs{})
+	labgob.Register(PutAppendArgs{})
+	labgob.Register(PutAppendReply{})
 }

@@ -1,17 +1,20 @@
 package kvraft
 
-import "../porcupine"
-import "../models"
-import "testing"
-import "strconv"
-import "time"
-import "math/rand"
-import "log"
-import "strings"
-import "sync"
-import "sync/atomic"
-import "fmt"
-import "io/ioutil"
+import (
+	"fmt"
+	"io/ioutil"
+	"log"
+	"math/rand"
+	"strconv"
+	"strings"
+	"sync"
+	"sync/atomic"
+	"testing"
+	"time"
+
+	"../models"
+	"../porcupine"
+)
 
 // The tester generously allows solutions to complete elections in one second
 // (much more than the paper's range of timeouts).
@@ -213,6 +216,7 @@ func GenericTest(t *testing.T, part string, nclients int, unreliable bool, crash
 				} else {
 					// log.Printf("%d: client new get %v\n", cli, key)
 					v := Get(cfg, myck, key)
+					// log.Printf("key: %v value: %v", key, v)
 					if v != last {
 						log.Fatalf("get wrong value, key %v, wanted:\n%v\n, got\n%v\n", key, last, v)
 					}
@@ -241,7 +245,10 @@ func GenericTest(t *testing.T, part string, nclients int, unreliable bool, crash
 			// wait for a while so that we have a new term
 			time.Sleep(electionTimeout)
 		}
-
+		// log.Printf("+++++++++++++++++++")
+		// v := Get(cfg, ck, "0")
+		// log.Printf("Check %v for client %d\n", 0, i)
+		// log.Printf("key: %v value: %v\n", "0", v)
 		if crash {
 			// log.Printf("shutdown servers\n")
 			for i := 0; i < nservers; i++ {
@@ -260,14 +267,15 @@ func GenericTest(t *testing.T, part string, nclients int, unreliable bool, crash
 
 		// log.Printf("wait for clients\n")
 		for i := 0; i < nclients; i++ {
-			// log.Printf("read from clients %d\n", i)
 			j := <-clnts[i]
-			// if j < 10 {
-			// 	log.Printf("Warning: client %d managed to perform only %d put operations in 1 sec?\n", i, j)
-			// }
+			log.Printf("read from clients %d\n", i)
+			if j < 10 {
+				log.Printf("Warning: client %d managed to perform only %d put operations in 1 sec?\n", i, j)
+			}
 			key := strconv.Itoa(i)
 			// log.Printf("Check %v for client %d\n", j, i)
 			v := Get(cfg, ck, key)
+			// log.Printf("key: %v value: %v\n", key, v)
 			checkClntAppends(t, i, v, j)
 		}
 
